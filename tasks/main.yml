@@ -25,3 +25,22 @@
       - nomad
     state: present
     update_cache: yes
+
+- name: Get Configuration Consul systemd
+  get_url:
+    url: "https://raw.githubusercontent.com/hashicorp/guides-configuration/master/consul/init/systemd/{{item}}"
+    dest: "/lib/systemd/system/{{ item }}"
+    mode: 0664
+  loop:
+    - consul-online.sh
+    - consul-online.target
+    - consul-online.service
+    - consul.service
+  notify: 
+
+- name: Get Configuration Vault systemd
+  get_url:
+    url: https://raw.githubusercontent.com/hashicorp/guides-configuration/master/vault/init/systemd/vault.service
+    dest: /lib/systemd/system/vault.service
+    mode: 0664
+         

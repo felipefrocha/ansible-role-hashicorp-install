@@ -1,7 +1,7 @@
-Role Name
+Hashicorp Install
 =========
 
-A brief description of the role goes here.
+Instalação da Hashistack em maquinas UYbuntu
 
 Requirements
 ------------
