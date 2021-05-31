@@ -1,0 +1,51 @@
+- name: Get Hashicorp keyring
+  get_url:
+    url: https://apt.releases.hashicorp.com/gpg
+    dest: /tmp/apt.gpg
+
+- name: Add Apt signing key on remote server to keyring
+  ansible.builtin.apt_key:
+    file: /tmp/apt.gpg
+    state: present
+
+- name: Register Release
+  shell:
+     lsb_release -cs
+  register: linux_release
+  changed_when: false
+
+- name: Add Hashicorp Repository
+  ansible.builtin.apt_repository:
+    repo: "deb [arch=amd64] https://apt.releases.hashicorp.com {{ linux_release.stdout }} main"
+    state: present
+
+- name: Update repositories cache and install hashicrop package
+  apt:
+    package:
+      - consul
+      - vault
+      - nomad
+    state: present
+    update_cache: yes
+
+- name: Get Configuration Consul systemd
+  get_url:
+    url: "https://raw.githubusercontent.com/hashicorp/guides-configuration/master/consul/init/systemd/{{item}}"
+    dest: "/lib/systemd/system/{{ item }}"
+    mode: 0664
+  loop:
+    - consul-online.sh
+    - consul-online.target
+    - consul-online.service
+    - consul.service
+  notify:
+    - Enable consul-online systemd
+    - Enable consul systemd
+
+- name: Get Configuration Vault systemd
+  get_url:
+    url: https://raw.githubusercontent.com/hashicorp/guides-configuration/master/vault/init/systemd/vault.service
+    dest: /lib/systemd/system/vault.service
+    mode: 0664
+  notify: Enable vault systemd
+         
