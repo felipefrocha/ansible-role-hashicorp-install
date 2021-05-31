@@ -5,3 +5,14 @@
 - name: Install in ubuntu
   include_tasks: ubuntu.yml
   when: ansible_facts['distribution'] == "Ubuntu" and ansible_facts['distribution_major_version'] == "20"
+
+- name: Base Config
+  copy:
+    src: "files/{{item}}-default.hcl"
+    dest: "/etc/{{item}}.d/default.hcl"
+    mode: 0644
+    owner: "{{item}}"
+    group: "{{item}}"
+  loop:
+    - consul
+    - vault

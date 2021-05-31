@@ -3,17 +3,14 @@
 - name: Enable consul systemd
   ansible.builtin.systemd:
     name: consul
-    state: started
     enabled: yes
 
 - name: Enable vault systemd
   ansible.builtin.systemd:
     name: vault
-    state: started
     enabled: yes
 
 - name: Enable consul-online systemd
   ansible.builtin.systemd:
     name: consul-online
-    state: started
     enabled: yes
