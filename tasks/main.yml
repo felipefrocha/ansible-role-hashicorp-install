@@ -1,0 +1,27 @@
+---
+- name: Add Hashicorp Credentials
+  shell: |
+    curl -fsSL https://apt.releases.hashicorp.com/gpg |sudo apt-key add -
+
+
+
+- name: Register Release
+  shell:
+     lsb_release -cs
+  register: linux_release
+  changed_when: false
+
+- name: Add Hashicorp Repository
+  ansible.builtin.apt_repository:
+    repo: "deb [arch=amd64] https://apt.releases.hashicorp.com {{ linux_release.stdout }} main"
+    state: present
+
+
+- name: Update repositories cache and install hashicrop package
+  apt:
+    package:
+      - consul
+      - vault
+      - nomad
+    state: present
+    update_cache: yes

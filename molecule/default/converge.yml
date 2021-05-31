@@ -1,0 +1,7 @@
+---
+- name: Converge
+  hosts: all
+  tasks:
+    - name: "Include ansible-role-hashicorp-install"
+      include_role:
+        name: hashicorp_install
