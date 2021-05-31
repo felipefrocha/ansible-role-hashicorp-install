@@ -1,46 +1,7 @@
 ---
-- name: Add Hashicorp Credentials
-  shell: |
-    curl -fsSL https://apt.releases.hashicorp.com/gpg |sudo apt-key add -
+- debug:
+    msg: "{{ ansible_facts['distribution'] }} e {{ ansible_facts['distribution_major_version'] }}"
 
-
-
-- name: Register Release
-  shell:
-     lsb_release -cs
-  register: linux_release
-  changed_when: false
-
-- name: Add Hashicorp Repository
-  ansible.builtin.apt_repository:
-    repo: "deb [arch=amd64] https://apt.releases.hashicorp.com {{ linux_release.stdout }} main"
-    state: present
-
-
-- name: Update repositories cache and install hashicrop package
-  apt:
-    package:
-      - consul
-      - vault
-      - nomad
-    state: present
-    update_cache: yes
-
-- name: Get Configuration Consul systemd
-  get_url:
-    url: "https://raw.githubusercontent.com/hashicorp/guides-configuration/master/consul/init/systemd/{{item}}"
-    dest: "/lib/systemd/system/{{ item }}"
-    mode: 0664
-  loop:
-    - consul-online.sh
-    - consul-online.target
-    - consul-online.service
-    - consul.service
-  notify: 
-
-- name: Get Configuration Vault systemd
-  get_url:
-    url: https://raw.githubusercontent.com/hashicorp/guides-configuration/master/vault/init/systemd/vault.service
-    dest: /lib/systemd/system/vault.service
-    mode: 0664
-         
+- name: Install in ubuntu
+  include_tasks: ubuntu.yml
+  when: ansible_facts['distribution'] == "Ubuntu" and ansible_facts['distribution_major_version'] == "20"

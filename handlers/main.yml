@@ -11,8 +11,8 @@
     name: vault
     state: started
     enabled: yes
-    
-- name: Enable consul online systemd
+
+- name: Enable consul-online systemd
   ansible.builtin.systemd:
     name: consul-online
     state: started
