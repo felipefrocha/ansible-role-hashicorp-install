@@ -29,12 +29,13 @@
     update_cache: yes
 
 - name: Get Configuration Consul systemd
-  get_url:
-    url: "https://raw.githubusercontent.com/hashicorp/guides-configuration/master/consul/init/systemd/{{item}}"
+  copy:
+    src: "files/{{item}}"
     dest: "/lib/systemd/system/{{ item }}"
+    owner: consul
+    group: consul
     mode: 0664
   loop:
-    - consul-online.sh
     - consul-online.target
     - consul-online.service
     - consul.service
@@ -42,10 +43,20 @@
     - Enable consul-online systemd
     - Enable consul systemd
 
+
+- name: Get Consul online executable
+  copy:
+    src: files/consul-online.sh
+    dest: /usr/bin/consul-online.sh
+    owner: consul
+    group: consul
+    mode: 0664
+
 - name: Get Configuration Vault systemd
-  get_url:
-    url: https://raw.githubusercontent.com/hashicorp/guides-configuration/master/vault/init/systemd/vault.service
+  copy:
+    src: files/vault.service
     dest: /lib/systemd/system/vault.service
+    owner: vault
+    group: vault
     mode: 0664
   notify: Enable vault systemd
-         
